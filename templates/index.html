@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Cloudhub Security Hub{% endblock %}
+
+{% block content %}
+    
+    <div class="jumbotron">
+        <h1 class="display-4">Cloudhub Security Hub</h1>
+        <p class="lead">A comprehensive guide to ensuring your AWS infrastructure is secure. Explore best practices, security levels, and compliance tips.</p>
+        <hr class="my-4">
+        <p>Stay ahead of potential vulnerabilities and protect your resources.</p>
+        <a class="btn btn-primary btn-lg" href="/checklist" role="button">View Checklist</a>
+    </div>
+
+    
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Security Best Practices</h4>
+                    <p class="card-text">Learn about the best practices to secure your AWS infrastructure, from IAM policies to VPC configurations.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Compliance</h4>
+                    <p class="card-text">Explore various compliance standards and how AWS services help you adhere to them, including PCI-DSS, HIPAA, and GDPR.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Security Levels</h4>
+                    <p class="card-text">Understand the different security levels, from low to critical, and how they apply to your AWS services.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+

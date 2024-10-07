@@ -1,0 +1,235 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0390c8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.navbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-center-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    color: #fff;
+    background-color: #0390c8;
+    padding: 5px 15px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+.navbar-nav {
+    margin-left: auto;
+}
+
+.navbar-toggler {
+    margin-right: 20px;
+}
+
+nav {
+    background-color: #fff;
+    padding: 1rem;
+    color: #0390c8;
+}
+
+nav h1, nav a {
+    display: inline;
+    margin-right: 20px;
+    color: #0390c8;
+}
+
+.logo {
+    height: 50px; 
+    width: auto; 
+    max-height: 50px; 
+    display: block; 
+    padding: 5px 0; 
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h3 {
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+    background-color: #0377cf;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+
+table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+}
+
+table td:nth-child(2) { 
+    min-width: 150px; 
+    max-width: 250px; 
+}
+
+table td:nth-child(4) { 
+    min-width: 200px; 
+    max-width: 250px; 
+}
+
+thead th {
+    background-color: #b7e7fa;
+    color: #0381b3;
+    font-weight: bold;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+table td select {
+    font-size: 14px; 
+    padding: 5px; 
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    min-width: 200px;
+}
+
+table td select option {
+    font-size: 14px; 
+}
+
+.btn {
+    padding: 7px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #0381b3;
+    color: white;
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    color: #0381b3;
+    border: 2px solid #0381b3;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0381b3;;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #007bff;
+}
+
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #007bff;
+}
+
+.input-group {
+    display: flex;
+    width: 100%;
+}
+
+.input-group .form-control {
+    border-right: none;
+    border-radius: 5px 0 0 5px;
+}
+
+.input-group .btn {
+    border-radius: 0 5px 5px 0;
+}
+
+
+.text-center {
+    text-align: center;
+}
+
+.text-center .btn {
+    margin-top: 20px;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+
+    table th, 
+    table td {
+        padding: 10px;
+    }
+
+    table td select {
+        width: 100%; 
+    }
+
+    input[type="text"], 
+    .btn {
+        font-size: 14px;
+    }
+}
+
+.card {
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s; 
+}
+
+.card:hover {
+    transform: translateY(-5px); 
+}
+
+footer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff;
+    color: #0390c8;
+    text-align: center;
+}
+
+.search-bar {
+    margin: 10px 0;
+}

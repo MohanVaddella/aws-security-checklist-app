@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}AWS Security Checklist{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    
+    <form id="searchForm" method="GET" action="{{ url_for('checklist') }}">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="search" name="search" placeholder="Search by security level..." value="{{ request.args.get('search', '') }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
+    
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>App Name</th>
+                <th>Type</th>
+                <th>Level</th>
+                <th>Control Areas</th>
+                <th>Layer 2 Controls (Generic)</th>
+                <th>AWS Controls</th>
+                <th>AWS Sub-Controls</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for control in controls %}
+            <tr>
+                <td>{{ control['App Name'] }}</td>
+                <td>
+                    <select class="form-control" name="type">
+                        <option value="">Select Type</option>
+                        <option value="Low" {% if control['Type'] == 'Low' %}selected{% endif %}>Low</option>
+                        <option value="Medium" {% if control['Type'] == 'Medium' %}selected{% endif %}>Medium</option>
+                        <option value="High" {% if control['Type'] == 'High' %}selected{% endif %}>High</option>
+                        <option value="Critical" {% if control['Type'] == 'Critical' %}selected{% endif %}>Critical</option>
+                    </select>
+                </td>
+                <td>{{ control['Level'] }}</td>
+                <td>
+                    <select class="form-control" name="control_area">
+                        <option value="">Select Control</option>
+                        <option value="Security governance" {% if control['Control Areas'] == 'Security governance' %}selected{% endif %}>Security governance</option>
+                        <option value="Security assurance" {% if control['Control Areas'] == 'Security assurance' %}selected{% endif %}>Security assurance</option>
+                        <option value="Identity and access management" {% if control['Control Areas'] == 'Identity and access management' %}selected{% endif %}>Identity and access management</option>
+                        <option value="Threat detection" {% if control['Control Areas'] == 'Threat detection' %}selected{% endif %}>Threat detection</option>
+                        <option value="Vulnerability management" {% if control['Control Areas'] == 'Vulnerability management' %}selected{% endif %}>Vulnerability management</option>
+                        <option value="Infrastructure protection" {% if control['Control Areas'] == 'Infrastructure protection' %}selected{% endif %}>Infrastructure protection</option>
+                        <option value="Data protection" {% if control['Control Areas'] == 'Data protection' %}selected{% endif %}>Data protection</option>
+                        <option value="Application security" {% if control['Control Areas'] == 'Application security' %}selected{% endif %}>Application security</option>
+                        <option value="Incident response" {% if control['Control Areas'] == 'Incident response' %}selected{% endif %}>Incident response</option>
+                    </select>
+                </td>
+                <td>{{ control['Layer 2 Controls (Generic)'] }}</td>
+                <td>{{ control['AWS Controls'] }}</td>
+                <td>{{ control['AWS Sub-Controls'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    
+    {% if not all_controls_loaded %}
+    <div class="text-center mb-4">
+        <button id="showMoreBtn" class="btn btn-outline-primary">Show More</button>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const showMoreBtn = document.getElementById('showMoreBtn');
+        let offset = 10;
+        const searchQuery = document.getElementById('search').value || '';
+
+        if (showMoreBtn) {
+            showMoreBtn.addEventListener('click', function() {
+                
+                fetch(`/checklist/show_more?offset=${offset}&search=${searchQuery}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log(data);
+                        
+                        console.log(data.controls);
+                        const tableBody = document.querySelector('tbody');
+                        data.controls.forEach(control => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${control['App Name']}</td>
+                                <td>
+                                    <select class="form-control" name="type">
+                                        <option value="">Select Type</option>
+                                        <option value="Low" ${control['Type'] === 'Low' ? 'selected' : ''}>Low</option>
+                                        <option value="Medium" ${control['Type'] === 'Medium' ? 'selected' : ''}>Medium</option>
+                                        <option value="High" ${control['Type'] === 'High' ? 'selected' : ''}>High</option>
+                                        <option value="Critical" ${control['Type'] === 'Critical' ? 'selected' : ''}>Critical</option>
+                                    </select>
+                                </td>
+                                <td>${control['Level']}</td>
+                                <td>
+                                    <select class="form-control" name="control_area">
+                                        <option value="">Select Control</option>
+                                        <option value="Security governance" ${control['Control Areas'] === 'Security governance' ? 'selected' : ''}>Security governance</option>
+                                        <option value="Security assurance" ${control['Control Areas'] === 'Security assurance' ? 'selected' : ''}>Security assurance</option>
+                                        <option value="Identity and access management" ${control['Control Areas'] === 'Identity and access management' ? 'selected' : ''}>Identity and access management</option>
+                                        <option value="Threat detection" ${control['Control Areas'] === 'Threat detection' ? 'selected' : ''}>Threat detection</option>
+                                        <option value="Vulnerability management" ${control['Control Areas'] === 'Vulnerability management' ? 'selected' : ''}>Vulnerability management</option>
+                                        <option value="Infrastructure protection" ${control['Control Areas'] === 'Infrastructure protection' ? 'selected' : ''}>Infrastructure protection</option>
+                                        <option value="Data protection" ${control['Control Areas'] === 'Data protection' ? 'selected' : ''}>Data protection</option>
+                                        <option value="Application security" ${control['Control Areas'] === 'Application security' ? 'selected' : ''}>Application security</option>
+                                        <option value="Incident response" ${control['Control Areas'] === 'Incident response' ? 'selected' : ''}>Incident response</option>
+                                    </select>
+                                </td>
+                                <td>${control['Layer 2 Controls (Generic)']}</td>
+                                <td>${control['AWS Controls']}</td>
+                                <td>${control['AWS Sub-Controls']}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+
+                        offset += 10;
+
+                        
+                        if (data.all_loaded) {
+                            showMoreBtn.style.display = 'none';
+                        }
+                    })
+                    .catch(error => console.error('Error loading more controls:', error));
+            });
+        }
+    });
+</script>
+
+
+{% endblock %}
