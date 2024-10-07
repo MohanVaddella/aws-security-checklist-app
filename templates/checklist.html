@@ -6,7 +6,7 @@
 <div class="container">
 
     
-    <form id="searchForm" method="GET" action="{{ url_for('checklist') }}">
+    <form id="searchForm">
         <div class="input-group mb-3">
             <input type="text" class="form-control" id="search" name="search" placeholder="Search by security level..." value="{{ request.args.get('search', '') }}">
             <div class="input-group-append">
@@ -28,7 +28,7 @@
                 <th>AWS Sub-Controls</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="controlsTableBody">
             {% for control in controls %}
             <tr>
                 <td>{{ control['App Name'] }}</td>
@@ -74,6 +74,68 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        const searchForm = document.getElementById('searchForm');
+        const controlsTableBody = document.getElementById('controlsTableBody');
+
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const searchQuery = document.getElementById('search').value;
+
+            fetch(`/checklist/search?search=${searchQuery}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'  
+                }
+            })
+            .then(response => {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    return response.text();
+                }
+            })
+                .then(data => {
+                    controlsTableBody.innerHTML = '';   
+
+                    
+                    data.forEach(control => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${control['App Name']}</td>
+                            <td>
+                                <select class="form-control" name="type">
+                                    <option value="">Select Type</option>
+                                    <option value="Low" ${control['Type'] === 'Low' ? 'selected' : ''}>Low</option>
+                                    <option value="Medium" ${control['Type'] === 'Medium' ? 'selected' : ''}>Medium</option>
+                                    <option value="High" ${control['Type'] === 'High' ? 'selected' : ''}>High</option>
+                                    <option value="Critical" ${control['Type'] === 'Critical' ? 'selected' : ''}>Critical</option>
+                                </select>
+                            </td>
+                            <td>${control['Level']}</td>
+                            <td>
+                                <select class="form-control" name="control_area">
+                                    <option value="">Select Control</option>
+                                    <option value="Security governance" ${control['Control Areas'] === 'Security governance' ? 'selected' : ''}>Security governance</option>
+                                    <option value="Security assurance" ${control['Control Areas'] === 'Security assurance' ? 'selected' : ''}>Security assurance</option>
+                                    <option value="Identity and access management" ${control['Control Areas'] === 'Identity and access management' ? 'selected' : ''}>Identity and access management</option>
+                                    <option value="Threat detection" ${control['Control Areas'] === 'Threat detection' ? 'selected' : ''}>Threat detection</option>
+                                    <option value="Vulnerability management" ${control['Control Areas'] === 'Vulnerability management' ? 'selected' : ''}>Vulnerability management</option>
+                                    <option value="Infrastructure protection" ${control['Control Areas'] === 'Infrastructure protection' ? 'selected' : ''}>Infrastructure protection</option>
+                                    <option value="Data protection" ${control['Control Areas'] === 'Data protection' ? 'selected' : ''}>Data protection</option>
+                                    <option value="Application security" ${control['Control Areas'] === 'Application security' ? 'selected' : ''}>Application security</option>
+                                    <option value="Incident response" ${control['Control Areas'] === 'Incident response' ? 'selected' : ''}>Incident response</option>
+                                </select>
+                            </td>
+                            <td>${control['Layer 2 Controls (Generic)']}</td>
+                            <td>${control['AWS Controls']}</td>
+                            <td>${control['AWS Sub-Controls']}</td>
+                        `;
+                        controlsTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching search results:', error));
+        });
+
         const showMoreBtn = document.getElementById('showMoreBtn');
         let offset = 10;
         const searchQuery = document.getElementById('search').value || '';

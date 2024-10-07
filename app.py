@@ -68,26 +68,37 @@ def checklist():
 
 
 @app.route('/checklist/search', methods=['GET'])
-def search():
-    search_query = request.args.get('search', '')
+def search_checklist():
     try:
+        
         data = read_data(DATA_FILE)
-
         df = pd.DataFrame(data)
+        df = df.fillna('N/A')  
 
-        df = df.fillna('N/A')
 
-        if search_query:
-            filtered_data = df[df['Level'].str.contains(search_query, case=False, na=False)]
+        search = request.args.get('search', '').strip().lower()
+
+        
+        if search:
+            controls = df[df['Level'].str.lower().str.contains(search)]
         else:
-            filtered_data = df
+            controls = df
 
-        filtered_data_dict = filtered_data.to_dict(orient='records')
+        
+        controls_data = controls.to_dict('records')
 
-        return jsonify(filtered_data_dict)
-    
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':  
+            return jsonify(controls_data)  
+
+        
+        all_controls_loaded = len(controls_data) <= 10
+        return render_template('checklist.html', controls=controls_data[:10], all_controls_loaded=all_controls_loaded)
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"Error in /checklist/search: {str(e)}")
+        return jsonify({'error': f"An error occurred: {str(e)}"}), 500
+
     
 @app.route('/checklist/show_more', methods=['GET'])
 def show_more():
