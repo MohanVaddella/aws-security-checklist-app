@@ -38,26 +38,29 @@ def checklist():
     try:
         
         data = read_data(DATA_FILE)
-        
-
+        df = pd.DataFrame(data)
+        df = df.fillna('N/A')
         search_query = request.args.get('search', '')
 
         
         if search_query:
-            filtered_controls = [control for control in data if search_query.lower() in control['Level'].lower()]
+            filtered_controls = df[df['Level'].str.contains(search_query, case=False, na=False)]
         else:
-            filtered_controls = data
+            filtered_controls = df
         
+        
+        filtered_controls_data = filtered_controls.to_dict(orient='records')
+
         
         initial_display_count = 10
-        limited_controls = filtered_controls[:initial_display_count]
+        limited_controls = filtered_controls_data[:initial_display_count]
+
         
+        all_controls_loaded = len(filtered_controls_data) <= initial_display_count
+
         
-        all_controls_loaded = len(filtered_controls) <= initial_display_count
-        
-        
-        return render_template('checklist.html', controls=limited_controls, all_controls_loaded=all_controls_loaded,search_query=search_query)
-    
+        return render_template('checklist.html', controls=limited_controls, all_controls_loaded=all_controls_loaded, search_query=search_query)
+
     except FileNotFoundError:
         return "Data file not found.", 404
     except Exception as e:
@@ -66,16 +69,23 @@ def checklist():
 
 @app.route('/checklist/search', methods=['GET'])
 def search():
-    
     search_query = request.args.get('search', '')
     try:
         data = read_data(DATA_FILE)
+
+        df = pd.DataFrame(data)
+
+        df = df.fillna('N/A')
+
         if search_query:
-            filtered_data = [control for control in data if search_query.lower() in control['Level'].lower()]
+            filtered_data = df[df['Level'].str.contains(search_query, case=False, na=False)]
         else:
-            filtered_data = data
-        
-        return jsonify(filtered_data.to_dict(orient='records'))
+            filtered_data = df
+
+        filtered_data_dict = filtered_data.to_dict(orient='records')
+
+        return jsonify(filtered_data_dict)
+    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
