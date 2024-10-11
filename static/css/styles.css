@@ -15,7 +15,7 @@ body {
 
 .navbar-center-text {
     position: absolute;
-    left: 50%;
+    left: 40%;
     transform: translateX(-50%);
     white-space: nowrap;
     color: #fff;
@@ -215,11 +215,18 @@ input[type="text"]:focus {
     border: 1px solid #ddd; 
     border-radius: 10px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-    transition: transform 0.3s; 
+    transition: transform 0.3s, background-color 0.3s, color 0.3s; 
 }
 
 .card:hover {
-    transform: translateY(-5px); 
+    transform: translateY(-5px);
+    background-color: #0381b3;
+    color: white; 
+}
+
+.card:hover .card-title,
+.card:hover .card-text {
+    color: white;
 }
 
 footer {
